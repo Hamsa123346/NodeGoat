@@ -78,8 +78,15 @@ function SessionHandler(db) {
 
 
     this.displayLogoutPage = (req, res) => {
-        req.session.destroy(() => res.redirect("/"));
-    };
+    req.session.regenerate((err) => {
+        if (err) {
+            console.error("Session regeneration failed:", err);
+            return res.status(500).send("Internal Server Error");
+        }
+        res.redirect("/");
+    });
+};
+
 
     this.displaySignupPage = (req, res) => {
         res.render("signup", {
